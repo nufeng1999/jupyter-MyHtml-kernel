@@ -1,25 +1,24 @@
-## %file:src/file.py
-## %kcmd:list
+## %file:src/filefordict.py
 from typing import Dict, Tuple, Sequence,List
 from plugins.ISpecialID import IStag,IDtag,IBtag,ITag
 import re
 import os
 from shutil import copyfile,move
-class MyFile(IStag):
+class MyFilefordict(IStag):
     kobj=None
     def getName(self) -> str:
         # self.kobj._write_to_stdout("setKernelobj setKernelobj setKernelobj\n")
-        return 'MyFile'
+        return 'MyFilefordict'
     def getAuthor(self) -> str:
         return 'Author'
     def getIntroduction(self) -> str:
-        return 'MyFile'
+        return 'MyFilefordict'
     def getPriority(self)->int:
         return 0
     def getExcludeID(self)->List[str]:
         return []
     def getIDSptag(self) -> List[str]:
-        return ['file','saveto']
+        return ['filefordict','savetofordict']
     def setKernelobj(self,obj):
         self.kobj=obj
         # self.kobj._write_to_stdout("setKernelobj setKernelobj setKernelobj\n")
@@ -29,11 +28,16 @@ class MyFile(IStag):
     def on_ISpCodescanning(self,key, value,magics,line) -> str:
         # return self.filehander(self,key, value,magics,line)
         try:
-            self.kobj.addkey2dict(magics,'file')
-            if len(value)>0:
-                magics[key] += [value[re.search(r'[^/]',value).start():]]
-            else:
-                magics[key] +=['newfile']
+            dict=self.kobj.get_magicsbykey(magics,'filedict')
+            if len(dict)<1:return ''
+            newval=value
+            self.kobj.addkey2dict(magics,'filefordict')
+            for key, val in dict:
+                newval=value.replace("$".join(key),val.strip()) 
+                if len(newval)>0:
+                    magics[key] += [value[re.search(r'[^/]',newval).start():]]
+                else:
+                    magics[key] +=['newfile']
         except Exception as e:
             self.kobj._log(str(e),2)
         return ''
@@ -46,9 +50,9 @@ class MyFile(IStag):
         return False,''
     def on_after_buildfile(self,returncode,srcfile,magics)->bool:
         # self.kobj._log('on_after_buildfile  file\n',2)
-        if len(self.kobj.addkey2dict(magics,'file'))>0:
+        if len(self.kobj.addkey2dict(magics,'filefordict'))>0:
             # self.kobj._log("srcfile:"+srcfile+"\n")
-            newsrcfilename = self._fileshander(self,magics['file'],srcfile,magics)
+            newsrcfilename = self._fileshander(self,magics['filefordict'],srcfile,magics)
             magics['codefilename']=newsrcfilename
             self.kobj._log("file "+ newsrcfilename +" created successfully\n")
         return False
@@ -61,7 +65,7 @@ class MyFile(IStag):
     def on_after_exec(self,returncode,srcfile,magics)->bool:
         return False
     def on_after_completion(self,returncode,execfile,magics)->bool:
-        magics['file']=[]
+        magics['filefordict']={}
         return False
     def filehander(self,key, value,magics,line):
         self.kobj._write_to_stdout(value+"\n")
