@@ -1261,7 +1261,7 @@ class MyHtmlKernel(MyKernel):
     implementation = 'jupyter-MyHtml-kernel'
     implementation_version = '1.0'
     language = 'html'
-    language_version = sys.version.split()[0]
+    language_version = ''
     language_info = {'name': 'html',
                      'version': sys.version.split()[0],
                      'mimetype': 'text/html',
