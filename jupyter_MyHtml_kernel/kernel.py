@@ -89,10 +89,10 @@ class MyHtmlKernel(MyKernel):
         
 #################
 ##do_runcode
-    def do_runcode(self,return_code,fil_ename,magics,code, silent, store_history=True,
+    def do_runcode(self,return_code,file_name,magics,code, silent, store_history=True,
                     user_expressions=None, allow_stdin=True):
         return_code=return_code
-        fil_ename=fil_ename
+        file_name=file_name
         bcancel_exec=False
         retinfo=self.mymagics.get_retinfo()
         retstr=''
@@ -104,30 +104,30 @@ class MyHtmlKernel(MyKernel):
         ##代码运行结束
         if return_code != 0:
             self.mymagics._log("Executable exited with code {}".format(return_code),2)
-        return bcancel_exec,retinfo,magics, code,fil_ename,retstr
+        return bcancel_exec,retinfo,magics, code,file_name,retstr
 ##do_compile_code
-    def do_compile_code(self,return_code,fil_ename,magics,code, silent, store_history=True,
+    def do_compile_code(self,return_code,file_name,magics,code, silent, store_history=True,
                     user_expressions=None, allow_stdin=True):
         return_code=0
-        fil_ename=fil_ename
-        sourcefilename=fil_ename
+        file_name=file_name
+        sourcefilename=file_name
         bcancel_exec=False
         retinfo=self.mymagics.get_retinfo()
         retstr=''
-        return bcancel_exec,retinfo,magics, code,fil_ename,retstr
+        return bcancel_exec,retinfo,magics, code,file_name,retstr
 ##do_create_codefile
     def do_create_codefile(self,magics,code, silent, store_history=True,
                     user_expressions=None, allow_stdin=True):
         return_code=0
-        fil_ename=''
+        file_name=''
         bcancel_exec=False
         retinfo=self.mymagics.get_retinfo()
         retstr=''
         source_file=self.mymagics.create_codetemp_file(magics,code,suffix='.html')
         newsrcfilename=source_file.name
-        fil_ename=newsrcfilename
+        file_name=newsrcfilename
         return_code=True
-        return bcancel_exec,self.mymagics.get_retinfo(),magics, code,fil_ename,retstr
+        return bcancel_exec,self.mymagics.get_retinfo(),magics, code,file_name,retstr
 ##do_preexecute
     def do_preexecute(self,code,magics,silent, store_history=True,
                 user_expressions=None, allow_stdin=False):
